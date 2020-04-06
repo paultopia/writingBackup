@@ -1,5 +1,9 @@
 import PerfectLib
+import Toml
 
+let config = try! Toml(contentsOfFile: "config.toml")
+
+let inputFile = config.string("input-file")!
 
 public func PanDocConvert(sourceFile: String, resultFile: String, bibFile: String) throws {
     let proc = try SysProcess("pandoc",
@@ -18,7 +22,7 @@ public func PanDocConvert(sourceFile: String, resultFile: String, bibFile: Strin
 }
 
 try PanDocConvert (
-  sourceFile: "./testdoc.md",
+  sourceFile: inputFile,
   resultFile: "./output_test.md",
   bibFile: "pgtest.json")
 
