@@ -7,6 +7,11 @@ public func readConfig() -> String {
     return inputFile
 }
 
+// untried
+public func combineFiles(files: [String]) throws -> String {
+    let strings = files.map { try String(contentsOfFile: $0) }
+    return strings.joined(separator: "\n\n")
+}
 
 
 public func PanDocConvert(sourceFile: String, resultFile: String, bibFile: String) throws {
