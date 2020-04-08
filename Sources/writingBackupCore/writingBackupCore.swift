@@ -2,11 +2,40 @@ import PerfectLib
 import Toml
 import Foundation
 
-public func readConfig() -> String {
-    let config = try! Toml(contentsOfFile: "config.toml")
-    let inputFile = config.string("input-file")!
-    return inputFile
+
+public struct BackupConfig {
+    public var inFiles: [String]
+    public var outFile: String
+    public var bibFile: String?
+
+    public init(from configFile: String) {
+        let config = try! Toml(contentsOfFile: configFile)
+        self.inFiles = config.array("inFiles")!
+        self.outFile = config.string("outFile")!
+        self.bibFile = config.string("bibFile")
+    }
+
+    public func convert() throws {
+        let combined = try! combineFiles(from: self.inFiles)
+        let tempFile = makeTempFile(with: combined)
+        if let references = self.bibFile {
+            let args = [tempFile,
+                        "-f", "markdown",
+                        "--filter", "pandoc-citeproc",
+                        "-t", "markdown-raw_html-citations-native_divs-native_spans",
+                        "--bibliography", references,
+                        "-o", NSString(string: self.outFile).expandingTildeInPath]
+        }
+        else {
+            let args = [tempFile,
+                        "-f", "markdown",
+                        "-o", NSString(string: self.outFile).expandingTildeInPath]
+        }
+        print("successfully backed up \(self.inFiles) to \(self.outFile)!")
+    }
 }
+
+
 
 
 
