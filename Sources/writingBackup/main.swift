@@ -1,5 +1,3 @@
 import writingBackupCore
-
-let configFile = BackupConfig(from: "config.toml")
+let configFile = BackupConfig(from: "backup.toml")
 try configFile.convert()
-
