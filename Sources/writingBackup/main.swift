@@ -13,6 +13,5 @@ try PanDocConvert (
 
 // print(foo)
 
-// print(NSString("~Dropbox/").expandingTildeInPath)
 
 print("Success!")
