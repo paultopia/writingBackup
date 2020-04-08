@@ -1,5 +1,6 @@
 import PerfectLib
 import Toml
+import Foundation
 
 public func readConfig() -> String {
     let config = try! Toml(contentsOfFile: "config.toml")
@@ -7,11 +8,6 @@ public func readConfig() -> String {
     return inputFile
 }
 
-// untried
-public func combineFiles(files: [String]) throws -> String {
-    let strings = files.map { try String(contentsOfFile: $0) }
-    return strings.joined(separator: "\n\n")
-}
 
 
 public func PanDocConvert(sourceFile: String, resultFile: String, bibFile: String) throws {
@@ -21,7 +17,7 @@ public func PanDocConvert(sourceFile: String, resultFile: String, bibFile: Strin
                                      "--filter", "pandoc-citeproc",
                                      "-t", "markdown-raw_html-citations-native_divs-native_spans",
                                      "--bibliography", bibFile,
-                                     "-o", resultFile],
+                                     "-o", NSString(string: resultFile).expandingTildeInPath],
                               env: [("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin")])
     let res = try proc.wait(hang: true)
     if res != 0 {
