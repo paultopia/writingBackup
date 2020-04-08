@@ -1,11 +1,11 @@
 import Foundation
 
-public func combineFiles(from files: [String]) throws -> String {
+func combineFiles(from files: [String]) throws -> String {
     let strings = try files.map { try String(contentsOfFile: $0) }
     return strings.joined(separator: "\n\n")
 }
 
-public func makeTempFile(with inString: String) -> String {
+func makeTempFile(with inString: String) -> String {
     let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(),
                                     isDirectory: true)
     let temporaryFilename = ProcessInfo().globallyUniqueString
@@ -15,4 +15,8 @@ public func makeTempFile(with inString: String) -> String {
     let stringPath = temporaryFileURL.path
     print("path is: \(stringPath).")
     return stringPath
+}
+
+func cleanUp(_ tempFile: String) {
+    try! FileManager.default.removeItem(atPath: tempFile)
 }

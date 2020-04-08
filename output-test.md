@@ -1,5 +1,7 @@
 this is a test (Gowder 2014) cited me.
 
+this is a second file
+
 ::: {#refs .references}
 ::: {#ref-gowder_equal_2014-1}
 Gowder, Paul. 2014. "Equal Law in an Unequal World." *Iowa Law Review*

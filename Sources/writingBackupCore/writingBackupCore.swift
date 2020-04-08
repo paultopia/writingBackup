@@ -18,8 +18,9 @@ public struct BackupConfig {
     public func convert() throws {
         let combined = try! combineFiles(from: self.inFiles)
         let tempFile = makeTempFile(with: combined)
+        var args: [String]
         if let references = self.bibFile {
-            let args = [tempFile,
+            args = [tempFile,
                         "-f", "markdown",
                         "--filter", "pandoc-citeproc",
                         "-t", "markdown-raw_html-citations-native_divs-native_spans",
@@ -27,11 +28,21 @@ public struct BackupConfig {
                         "-o", NSString(string: self.outFile).expandingTildeInPath]
         }
         else {
-            let args = [tempFile,
+            args = [tempFile,
                         "-f", "markdown",
                         "-o", NSString(string: self.outFile).expandingTildeInPath]
         }
+
+        let proc = try SysProcess("pandoc",
+                                  args: args,
+                                  env: [("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin")])
+        let res = try proc.wait(hang: true)
+        if res != 0 {
+            let s = try proc.stderr?.readString() ?? "Unknown Error"
+            throw PerfectError.systemError(Int32(res), s)
+        }
         print("successfully backed up \(self.inFiles) to \(self.outFile)!")
+        cleanUp(tempFile)
     }
 }
 
