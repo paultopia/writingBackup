@@ -41,18 +41,22 @@ final class writingBackupTests: XCTestCase {
 
     func testSimpleFunction() throws {
         FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/")
-        try runBackup()
+        let tempFile = try runBackup()
+        XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
         let actualOutput = try String(contentsOfFile: "output-test.md")
         XCTAssertEqual(outputWithCites, actualOutput)
         cleanUp("output-test.md")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
     }
 
     func testNoCites() throws {
         FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/nocites/")
-        try runBackup()
+        let tempFile = try runBackup()
+        XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
         let actualOutput = try String(contentsOfFile: "output-test.md")
         XCTAssertEqual(outputNoCites, actualOutput)
         cleanUp("output-test.md")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
     }
 
     static var allTests = [

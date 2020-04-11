@@ -1,2 +1,2 @@
 import writingBackupCore
-try runBackup()
+let _ = try runBackup()

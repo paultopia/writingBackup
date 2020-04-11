@@ -37,7 +37,7 @@ public struct BackupConfig {
 
     }
 
-    public func convert() throws {
+    public func convert() throws -> String {
         let combined = try! combineFiles(from: self.inFiles)
         let tempFile = makeTempFile(with: combined)
         var args: [String]
@@ -66,10 +66,12 @@ public struct BackupConfig {
         }
         print("successfully backed up \(self.inFiles) to \(self.outFile)!")
         cleanUp(tempFile)
+        return tempFile // returning it just for testing purposes to make sure it gets deleted.
     }
 }
 
-public func runBackup() throws {
+public func runBackup() throws -> String {
     let configFile = try BackupConfig(from: "backup.toml") 
-    try configFile.convert()
+    let tempFilePath = try configFile.convert()
+    return tempFilePath // returning it just for testing purposes to make sure it gets deleted.
 }
