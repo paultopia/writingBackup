@@ -20,15 +20,17 @@ You give it a config file (details below).  It takes all the markdown files that
 
 ## How to use? 
 
-1.  Put the binary release (see the releases tab) of this thing somewhere on your PATH.
+1.  Put the binary release (see the releases tab) of this thing somewhere on your PATH. Rename it whatever you want (I was tempted to name this whole thing "backup," but that feels like a thing that would clash with other names, so we'll just pretend it's called writingBackup like in the releases.) and make sure it's executable.
 
-2.  Put a file called `backup.toml` in the root folder of the repository containing your writing. That file should contain the following: 
+2.  Put a file called `backup.toml` in the root folder of the repository containing your writing. This is your config file, it should contain the following: 
 
 	a.  An array called `inFiles` listing every markdown file to back up, in order you want them to appear in the combined file, as relative paths from the root of the directory. Actually, absolute paths probably would work too, but I haven't tested.
 
 	b.  A string called `outFile` with a path to the destination markdown file.  Tilde expansion (e.g. ~/Dropbox/MyBackups/GreatPaperBackup.md) works.
 
 	c.  (Optional) A string called `bibFile` with a path to bibliography in any format that Pandoc can parse (bibTeX, CSL JSON, etc. etc.). 
+
+To see an example of a correctly formatted config file, see [here](Tests/writingBackupTests/testfiles/backup.toml).
 
 ## What else do I need?
 
@@ -45,3 +47,7 @@ MIT License.
 Some of the code (for getting pandoc to run) adapted (i.e., swiped) from [https://github.com/RockfordWei/PanDoc](https://github.com/RockfordWei/PanDoc), which doesn't have a license listed, but last I recall (I think) the GitHub user agreement opts one in to a default of the MIT license for public repos without any other license so I'm relying on that. 
  
 Architecture for getting it to work using commandline app structure suggested by [Sundell](https://www.swiftbysundell.com/articles/building-a-command-line-tool-using-the-swift-package-manager/). 
+
+To repeat, early beta, might blow up, doesn't have any options at all yet, etc. etc. No warranties if it deletes all your data or something. 
+
+
