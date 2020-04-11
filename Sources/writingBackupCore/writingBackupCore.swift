@@ -5,7 +5,7 @@ import Foundation
 extension Toml {
     func readString(label key: String) throws -> String {
         guard let value = self.string(key) else {
-            print("can't read \(key) in backup.toml")
+            print("Can't read \(key) in backup.toml. It should be an array with a list of filenames.")
             throw FileSystemError.configFileMisformatted(key: key)
         }
         return value
@@ -13,7 +13,7 @@ extension Toml {
 
     func readArray(label key: String) throws -> [String] {  // should probably be generic but whev
         guard let values: [String] = self.array(key) else {
-            print("can't read \(key) in backup.toml")
+            print("Can't read \(key) in backup.toml. It should be a filename.")
             throw FileSystemError.configFileMisformatted(key: key)
         }
         return values
@@ -29,7 +29,7 @@ public struct BackupConfig {
         if let config = try? Toml(contentsOfFile: configFile) {
             try self.inFiles = config.readArray(label: "inFiles")
             try self.outFile = config.readString(label: "outFile")
-            try self.bibFile = config.readString(label: "bibFile")
+            self.bibFile = config.string("bibFile") // should just be nil if not found
         } else {
             print("Can't parse backup.toml.  Is the file correctly formatted?")
             throw FileSystemError.configFileNotParseable

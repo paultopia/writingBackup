@@ -2,7 +2,7 @@ import XCTest
 import class Foundation.Bundle
 @testable import writingBackupCore
 
-let outputShouldBe = """
+let outputWithCites = """
 this is a test (Gowder 2014) cited me.
 
 this is a second file
@@ -17,27 +17,46 @@ Gowder, Paul. 2014. "Equal Law in an Unequal World." *Iowa Law Review*
 
 """
 
+let outputNoCites = """
+this is a document without any citations.
+
+this is a second file
+
+"""
+
+
 final class writingBackupTests: XCTestCase {
-    func testDirectCall() throws {
-        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/")
-        let configFile = try BackupConfig(from: "backup.toml")
-        try configFile.convert()
-        let actualOutput = try String(contentsOfFile: "output-test.md")
-        XCTAssertEqual(outputShouldBe, actualOutput)
-        cleanUp("output-test.md")
+
+    static var initialPath = ""
+
+    override class func setUp() { // get the initial path to reset at every method
+        super.setUp()
+        initialPath = FileManager.default.currentDirectoryPath
+    }
+
+    override func setUp() {
+        super.setUp()
+        FileManager.default.changeCurrentDirectoryPath(writingBackupTests.initialPath)
     }
 
     func testSimpleFunction() throws {
         FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/")
         try runBackup()
         let actualOutput = try String(contentsOfFile: "output-test.md")
-        XCTAssertEqual(outputShouldBe, actualOutput)
+        XCTAssertEqual(outputWithCites, actualOutput)
         cleanUp("output-test.md")
     }
 
+    func testNoCites() throws {
+        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/nocites/")
+        try runBackup()
+        let actualOutput = try String(contentsOfFile: "output-test.md")
+        XCTAssertEqual(outputNoCites, actualOutput)
+        cleanUp("output-test.md")
+    }
 
     static var allTests = [
-      ("testDirectCall", testDirectCall),
+      ("testNoCites", testNoCites),
       ("testSimpleFunction", testSimpleFunction)
     ]
 }
