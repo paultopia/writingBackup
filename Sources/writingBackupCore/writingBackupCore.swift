@@ -8,11 +8,16 @@ public struct BackupConfig {
     public var outFile: String
     public var bibFile: String?
 
-    public init(from configFile: String) {
-        let config = try! Toml(contentsOfFile: configFile)
-        self.inFiles = config.array("inFiles")!
-        self.outFile = config.string("outFile")!
-        self.bibFile = config.string("bibFile")
+    public init?(from configFile: String) {
+        if let config = try? Toml(contentsOfFile: configFile) {
+            self.inFiles = config.array("inFiles")!
+            self.outFile = config.string("outFile")!
+            self.bibFile = config.string("bibFile")
+        } else {
+            print("Can't parse backup.toml.  Is the file correctly formatted?")
+            return nil
+        }
+
     }
 
     public func convert() throws {
@@ -47,3 +52,10 @@ public struct BackupConfig {
     }
 }
 
+public func runBackup() throws {
+    guard let configFile = BackupConfig(from: "backup.toml") else {
+        print("Cannot load configuration. Giving up.")
+        throw FileSystemError.configFileNotParseable
+    }
+    try configFile.convert()
+}

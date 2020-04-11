@@ -18,10 +18,20 @@ Gowder, Paul. 2014. "Equal Law in an Unequal World." *Iowa Law Review*
 """
 
 final class writingBackupTests: XCTestCase {
-    func testExample() throws {
+    func testDirectCall() throws {
         FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/")
-        let configFile = BackupConfig(from: "backup.toml")
+        guard let configFile = BackupConfig(from: "backup.toml") else {
+            throw FileSystemError.configFileNotParseable
+        }
         try configFile.convert()
+        let actualOutput = try String(contentsOfFile: "output-test.md")
+        XCTAssertEqual(outputShouldBe, actualOutput)
+        cleanUp("output-test.md")
+    }
+
+    func testSimpleFunction() throws {
+        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/")
+        try runBackup()
         let actualOutput = try String(contentsOfFile: "output-test.md")
         XCTAssertEqual(outputShouldBe, actualOutput)
         cleanUp("output-test.md")
@@ -29,6 +39,7 @@ final class writingBackupTests: XCTestCase {
 
 
     static var allTests = [
-        ("testExample", testExample),
+      ("testDirectCall", testDirectCall),
+      ("testSimpleFunction", testSimpleFunction)
     ]
 }
