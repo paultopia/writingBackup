@@ -20,12 +20,12 @@ extension Toml {
     }
 }
 
-public struct BackupConfig {
-    public var inFiles: [String]
-    public var outFile: String
-    public var bibFile: String?
+struct BackupConfig {
+    var inFiles: [String]
+    var outFile: String
+    var bibFile: String?
 
-    public init(from configFile: String) throws {
+    init(from configFile: String) throws {
         if let config = try? Toml(contentsOfFile: configFile) {
             try self.inFiles = config.readArray(label: "inFiles")
             try self.outFile = config.readString(label: "outFile")
@@ -37,7 +37,7 @@ public struct BackupConfig {
 
     }
 
-    public func convert() throws -> String {
+    func convert() throws -> String {
         let combined = try combineFiles(from: self.inFiles)
         let tempFile = try makeTempFile(with: combined)
         var args: [String]
