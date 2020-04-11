@@ -66,7 +66,7 @@ struct BackupConfig {
             throw FileSystemError.pandocFailure(message: message)
         }
         print("successfully backed up \(self.inFiles) to \(self.outFile)!")
-        cleanUp(tempFile)
+        try cleanUp(tempFile)
         return tempFile // returning it just for testing purposes to make sure it gets deleted.
     }
 }

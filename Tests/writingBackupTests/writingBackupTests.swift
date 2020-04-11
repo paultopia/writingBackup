@@ -45,7 +45,7 @@ final class writingBackupTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
         let actualOutput = try String(contentsOfFile: "output-test.md")
         XCTAssertEqual(outputWithCites, actualOutput)
-        cleanUp("output-test.md")
+        try cleanUp("output-test.md")
         XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
     }
 
@@ -55,7 +55,7 @@ final class writingBackupTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
         let actualOutput = try String(contentsOfFile: "output-test.md")
         XCTAssertEqual(outputNoCites, actualOutput)
-        cleanUp("output-test.md")
+        try cleanUp("output-test.md")
         XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
     }
 

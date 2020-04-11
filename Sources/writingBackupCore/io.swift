@@ -29,6 +29,12 @@ func makeTempFile(with inString: String) throws -> String {
     }
 }
 
-func cleanUp(_ tempFile: String) {
-    try! FileManager.default.removeItem(atPath: tempFile)
+func cleanUp(_ tempFile: String) throws {
+    if FileManager.default.fileExists(atPath: tempFile) {  // maybe the OS already cleaned it
+        do {
+            try FileManager.default.removeItem(atPath: tempFile)
+        } catch {
+            throw FileSystemError.tempFileNotDeletable(file: tempFile)
+        }
+    }
 }
