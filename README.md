@@ -32,6 +32,10 @@ You give it a config file (details below).  It takes all the markdown files that
 
 To see an example of a correctly formatted config file, see [here](Tests/writingBackupTests/testfiles/backup.toml).
 
+3.  Whenever you want to backup, just type writingBackup at the command line from the directory that has your config file.  
+
+4.  Profit!
+
 ## What else do I need?
 
 - Pandoc and Pandoc-citeproc should be installed on your system.
