@@ -2,7 +2,7 @@
 
 This is a very small opinionated personal commandline tool for backing up markdown-formatted academic writing in git repositories somewhere else. 
 
-Early beta, might blow up, doesn't have any options at all yet, etc. etc.
+Early beta, might blow up, doesn't have any options at all yet, minimal tests and only for the happy path, etc. etc.
 
 ## Why? 
 
@@ -48,6 +48,6 @@ Some of the code (for getting pandoc to run) adapted (i.e., swiped) from [https:
  
 Architecture for getting it to work using commandline app structure suggested by [Sundell](https://www.swiftbysundell.com/articles/building-a-command-line-tool-using-the-swift-package-manager/). 
 
-To repeat, early beta, might blow up, doesn't have any options at all yet, etc. etc. No warranties if it deletes all your data or something. 
+To repeat, early beta, might blow up, doesn't have any options at all yet, minimal tests and only for the happy path, etc. etc. No warranties, you assume the risk if it deletes all your data or blows up your computer or something. 
 
 
