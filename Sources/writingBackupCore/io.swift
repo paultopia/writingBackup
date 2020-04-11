@@ -1,8 +1,17 @@
 import Foundation
 
+func readFile(from filename: String) throws -> String {
+    do {
+        return try String(contentsOfFile: filename)
+    } catch {
+        print("Cannot read file \(filename). Aborting.")
+        throw FileSystemError.fileNotReadable(file: filename)
+    }
+}
+
 func combineFiles(from files: [String]) throws -> String {
-    let strings = try files.map { try String(contentsOfFile: $0) }
-    return strings.joined(separator: "\n\n")
+    try files.map { try readFile(from: $0) }
+      .joined(separator: "\n\n")
 }
 
 func makeTempFile(with inString: String) -> String {

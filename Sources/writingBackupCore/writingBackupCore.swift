@@ -38,7 +38,7 @@ public struct BackupConfig {
     }
 
     public func convert() throws -> String {
-        let combined = try! combineFiles(from: self.inFiles)
+        let combined = try combineFiles(from: self.inFiles)
         let tempFile = makeTempFile(with: combined)
         var args: [String]
         let env = [("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin")]
@@ -62,7 +62,8 @@ public struct BackupConfig {
         let res = try proc.wait(hang: true)
         if res != 0 {
             let s = try proc.stderr?.readString() ?? "Unknown Error"
-            throw PerfectError.systemError(Int32(res), s)
+            let message = "Error code: \(Int32(res)), Stderr: \(s)"
+            throw FileSystemError.pandocFailure(message: message)
         }
         print("successfully backed up \(self.inFiles) to \(self.outFile)!")
         cleanUp(tempFile)
