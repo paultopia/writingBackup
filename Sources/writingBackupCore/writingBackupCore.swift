@@ -2,6 +2,23 @@ import PerfectLib
 import Toml
 import Foundation
 
+extension Toml {
+    func readString(label key: String) throws -> String {
+        guard let value = self.string(key) else {
+            print("can't read \(key) in backup.toml")
+            throw FileSystemError.configFileMisformatted(key: key)
+        }
+        return value
+    }
+
+    func readArray(label key: String) throws -> [String] {  // should probably be generic but whev
+        guard let values: [String] = self.array(key) else {
+            print("can't read \(key) in backup.toml")
+            throw FileSystemError.configFileMisformatted(key: key)
+        }
+        return values
+    }
+}
 
 public struct BackupConfig {
     public var inFiles: [String]
@@ -10,9 +27,9 @@ public struct BackupConfig {
 
     public init(from configFile: String) throws {
         if let config = try? Toml(contentsOfFile: configFile) {
-            self.inFiles = config.array("inFiles")!
-            self.outFile = config.string("outFile")!
-            self.bibFile = config.string("bibFile")
+            try self.inFiles = config.readArray(label: "inFiles")
+            try self.outFile = config.readString(label: "outFile")
+            try self.bibFile = config.readString(label: "bibFile")
         } else {
             print("Can't parse backup.toml.  Is the file correctly formatted?")
             throw FileSystemError.configFileNotParseable
