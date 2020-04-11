@@ -39,7 +39,7 @@ public struct BackupConfig {
 
     public func convert() throws -> String {
         let combined = try combineFiles(from: self.inFiles)
-        let tempFile = makeTempFile(with: combined)
+        let tempFile = try makeTempFile(with: combined)
         var args: [String]
         let env = [("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin")]
         if let references = self.bibFile {

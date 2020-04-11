@@ -14,16 +14,19 @@ func combineFiles(from files: [String]) throws -> String {
       .joined(separator: "\n\n")
 }
 
-func makeTempFile(with inString: String) -> String {
+func makeTempFile(with inString: String) throws -> String {
     let temporaryDirectoryURL = URL(fileURLWithPath: NSTemporaryDirectory(),
                                     isDirectory: true)
     let temporaryFilename = ProcessInfo().globallyUniqueString
     let temporaryFileURL =
       temporaryDirectoryURL.appendingPathComponent(temporaryFilename)
-    try! inString.write(to: temporaryFileURL, atomically: true, encoding: String.Encoding.utf8)
-    let stringPath = temporaryFileURL.path
-    print("path is: \(stringPath).")
-    return stringPath
+    do {
+        try inString.write(to: temporaryFileURL, atomically: true, encoding: String.Encoding.utf8)
+        let stringPath = temporaryFileURL.path
+        return stringPath
+    } catch {
+        throw FileSystemError.tempFileNotWriteable(file: temporaryFileURL.path)
+    }
 }
 
 func cleanUp(_ tempFile: String) {
