@@ -21,11 +21,13 @@ extension Toml {
 }
 
 struct BackupConfig {
-    var inFiles: [String]
-    var outFile: String
-    var bibFile: String?
+    let inFiles: [String]
+    let outFile: String
+    let bibFile: String?
+    let prefix: String
 
     init(from configFile: String) throws {
+        self.prefix = BackupConfig.setPrefix()
         if let config = try? Toml(contentsOfFile: configFile) {
             try self.inFiles = config.readArray(label: "inFiles")
             try self.outFile = config.readString(label: "outFile")
@@ -37,9 +39,21 @@ struct BackupConfig {
 
     }
 
-    func convert() throws -> String {
+    static func setPrefix() -> String {
+        let now = Date()
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US")
+        formatter.timeZone = TimeZone.current
+        formatter.dateStyle = .short
+        formatter.timeStyle = .long
+        let timeStamp = formatter.string(from: now)
+        return "**Automated backup of \(timeStamp).**\n\n"
+    }
+
+    func convert() throws -> (String, String) {
         let combined = try combineFiles(from: self.inFiles)
-        let tempFile = try makeTempFile(with: combined)
+        let stamped = self.prefix + combined
+        let tempFile = try makeTempFile(with: stamped)
         var args: [String]
         let env = [("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin")]
         if let references = self.bibFile {
@@ -67,12 +81,14 @@ struct BackupConfig {
         }
         print("successfully backed up \(self.inFiles) to \(self.outFile)!")
         try cleanUp(tempFile)
-        return tempFile // returning it just for testing purposes to make sure it gets deleted.
+        return (tempFile, self.prefix)
+        // returning tempfile just for testing purposes to make sure it gets deleted.
+        // and timestamp because I'll need it to compare generated file on disk to what it should be, also for testing.
     }
 }
 
-public func runBackup() throws -> String {
+public func runBackup() throws -> (String, String) {
     let configFile = try BackupConfig(from: "backup.toml") 
-    let tempFilePath = try configFile.convert()
-    return tempFilePath // returning it just for testing purposes to make sure it gets deleted.
+    let outputData = try configFile.convert()
+    return outputData // returning just for testing purposes.
 }
