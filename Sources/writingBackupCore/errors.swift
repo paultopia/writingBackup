@@ -5,4 +5,5 @@ enum FileSystemError: Error {
     case configFileNotParseable
     case configFileMisformatted(key: String)
     case pandocFailure(message: String)
+    case destinationAlreadyExists(destination: String)
 }

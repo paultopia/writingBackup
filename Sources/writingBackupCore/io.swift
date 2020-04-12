@@ -38,3 +38,14 @@ func cleanUp(_ tempFile: String) throws {
         }
     }
 }
+
+func outputSafetyCheck(destination: String) throws -> Bool {
+    if FileManager.default.fileExists(atPath: destination) {
+        guard let fileContents = try? String(contentsOfFile: destination) else {
+            print("I don't seem to have access to \(destination). Aborting.")
+            throw FileSystemError.fileNotReadable(file: destination)
+        }
+        return fileContents.hasPrefix("**Automated backup of ")
+    }
+    return true
+}
