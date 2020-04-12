@@ -1,0 +1,2 @@
+inFiles = ["../docs/nocites.md", "../docs/secondfile.md"]
+outFile = "./output-test.md"

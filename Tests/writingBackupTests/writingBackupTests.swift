@@ -24,6 +24,7 @@ this is a second file
 
 """
 
+let outputShouldNotBeOverwritten = "THIS FILE SHOULD NOT BE CHANGED\n\n" + outputNoCites
 
 final class writingBackupTests: XCTestCase {
 
@@ -63,8 +64,29 @@ final class writingBackupTests: XCTestCase {
         XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
     }
 
+    func testGoodOverwrite() throws {
+        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/file_exists_ok/")
+        let outputData = try runBackup()
+        let tempFile = outputData.0
+        let prefix = outputData.1
+        XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
+        let actualOutput = try String(contentsOfFile: "output-test.md")
+        XCTAssertEqual(prefix + outputNoCites, actualOutput)
+        // leaving the file there to be a good overwrite for next time; this test will false positive if run a second time less than a second letter
+    }
+
+    func testBadOverwrite() throws {
+        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/file_exists_bad/")
+        XCTAssertThrowsError(try runBackup())
+        let existingFile = try String(contentsOfFile: "output-test.md")
+        XCTAssertEqual(outputShouldNotBeOverwritten, existingFile)
+        // leaving the file there to be a good overwrite for next time; this test will false positive if run a second time less than a second letter
+    }
+
     static var allTests = [
       ("testNoCites", testNoCites),
-      ("testSimpleFunction", testSimpleFunction)
+      ("testSimpleFunction", testSimpleFunction),
+      ("testGoodOverwrite", testGoodOverwrite),
+      ("testBadOverwrite", testBadOverwrite)
     ]
 }
