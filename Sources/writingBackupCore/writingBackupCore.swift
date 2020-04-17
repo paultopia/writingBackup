@@ -92,7 +92,7 @@ struct BackupConfig {
     }
 }
 
-public func runBackup() throws -> (String, String) {
+@discardableResult public func runBackup() throws -> (String, String) {
     let configFile = try BackupConfig(from: "backup.toml") 
     let outputData = try configFile.convert()
     return outputData // returning just for testing purposes.
