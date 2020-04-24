@@ -6,4 +6,5 @@ enum FileSystemError: Error {
     case configFileMisformatted(key: String)
     case pandocFailure(message: String)
     case destinationAlreadyExists(destination: String)
+    case noHomeVariableSet
 }

@@ -25,8 +25,14 @@ struct BackupConfig {
     let outFile: String
     let bibFile: String?
     let prefix: String
+    let home: String
 
     init(from configFile: String) throws {
+        guard let homeVar = ProcessInfo.processInfo.environment["HOME"] else {
+            print("You need $HOME set in order to work pandoc-citeproc")
+            throw FileSystemError.noHomeVariableSet
+        }
+        self.home = homeVar
         self.prefix = BackupConfig.setPrefix()
         if let config = try? Toml(contentsOfFile: configFile) {
             try self.inFiles = config.readArray(label: "inFiles")
@@ -60,7 +66,7 @@ struct BackupConfig {
         let stamped = self.prefix + combined
         let tempFile = try makeTempFile(with: stamped)
         var args: [String]
-        let env = [("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin")]
+        let env = [("PATH", "/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"), ("HOME", self.home)]
         if let references = self.bibFile {
             args = [tempFile,
                         "-f", "markdown",
