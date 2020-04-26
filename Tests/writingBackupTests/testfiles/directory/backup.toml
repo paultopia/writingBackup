@@ -1,0 +1,3 @@
+inFiles = ["docsdir"]
+outFile = "./output-test.md"
+bibFile = "../pgtest.json"

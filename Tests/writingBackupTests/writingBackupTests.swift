@@ -83,10 +83,23 @@ final class writingBackupTests: XCTestCase {
         // leaving the file there to be a good overwrite for next time; this test will false positive if run a second time less than a second letter
     }
 
+    func testDirectory() throws {
+        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/directory/")
+        let outputData = try runBackup()
+        let tempFile = outputData.0
+        let prefix = outputData.1
+        XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
+        let actualOutput = try String(contentsOfFile: "output-test.md")
+        XCTAssertEqual(prefix + outputWithCites, actualOutput)
+        try cleanUp("output-test.md")
+        XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
+    }
+
     static var allTests = [
       ("testNoCites", testNoCites),
       ("testSimpleFunction", testSimpleFunction),
       ("testGoodOverwrite", testGoodOverwrite),
-      ("testBadOverwrite", testBadOverwrite)
+      ("testBadOverwrite", testBadOverwrite),
+      ("testDirectory", testDirectory)
     ]
 }

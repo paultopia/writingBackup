@@ -9,8 +9,32 @@ func readFile(from filename: String) throws -> String {
     }
 }
 
+func makePath(root: String, filename: String) -> String {
+    if root.hasSuffix("/") {
+        return root + filename
+    } else {
+        return root + "/" + filename
+    }
+}
+
 func combineFiles(from files: [String]) throws -> String {
-    try files.map { try readFile(from: $0) }
+    var output: [String] = []
+    for pathname in files {
+        if let contents = try? String(contentsOfFile: pathname) {
+            output.append(contents)
+        } else {
+            do {
+                let dircontents = try FileManager.default.contentsOfDirectory(atPath: pathname)
+                  .sorted(by: <)
+                  .map { makePath(root: pathname, filename: $0) }
+                  .map { try readFile(from: $0) }
+                output.append(contentsOf: dircontents)
+            } catch {
+                throw FileSystemError.fileNotReadable(file: pathname)
+            }
+        }
+    }
+    return output
       .joined(separator: "\n\n")
 }
 
