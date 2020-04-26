@@ -40,31 +40,30 @@ final class writingBackupTests: XCTestCase {
         FileManager.default.changeCurrentDirectoryPath(writingBackupTests.initialPath)
     }
 
-    func testSimpleFunction() throws {
-        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/")
+    func executeBasicTest(dir: String, correctOutput: String) throws {
+        FileManager.default.changeCurrentDirectoryPath(dir)
         let outputData = try runBackup()
         let tempFile = outputData.0
         let prefix = outputData.1
         XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
         let actualOutput = try String(contentsOfFile: "output-test.md")
-        XCTAssertEqual(prefix + outputWithCites, actualOutput)
+        XCTAssertEqual(prefix + correctOutput, actualOutput)
         try cleanUp("output-test.md")
         XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
+    }
+
+    func testSimpleFunction() throws {
+        let dir = "tests/writingBackupTests/testfiles/"
+        try executeBasicTest(dir: dir, correctOutput: outputWithCites)
     }
 
     func testNoCites() throws {
-        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/nocites/")
-        let outputData = try runBackup()
-        let tempFile = outputData.0
-        let prefix = outputData.1
-        XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
-        let actualOutput = try String(contentsOfFile: "output-test.md")
-        XCTAssertEqual(prefix + outputNoCites, actualOutput)
-        try cleanUp("output-test.md")
-        XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
+        let dir = "tests/writingBackupTests/testfiles/nocites/"
+        try executeBasicTest(dir: dir, correctOutput: outputNoCites)
     }
 
     func testGoodOverwrite() throws {
+        // not using basic test because I don't want the file deleted.
         FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/file_exists_ok/")
         let outputData = try runBackup()
         let tempFile = outputData.0
@@ -83,29 +82,14 @@ final class writingBackupTests: XCTestCase {
     }
 
     func testSimpleDirectory() throws {
-        FileManager.default.changeCurrentDirectoryPath("tests/writingBackupTests/testfiles/directory/")
-        let outputData = try runBackup()
-        let tempFile = outputData.0
-        let prefix = outputData.1
-        XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
-        let actualOutput = try String(contentsOfFile: "output-test.md")
-        XCTAssertEqual(prefix + outputWithCites, actualOutput)
-        try cleanUp("output-test.md")
-        XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
+        let dir = "tests/writingBackupTests/testfiles/directory/"
+        try executeBasicTest(dir: dir, correctOutput: outputWithCites)
     }
 
     func testComplexDirectory() throws {
-        let target = "tests/writingBackupTests/testfiles/complex_directory/"
+        let dir = "tests/writingBackupTests/testfiles/complex_directory/"
         let correctOutput = "this is a document without any citations." + "\n\n" + outputWithCites
-        FileManager.default.changeCurrentDirectoryPath(target)
-        let outputData = try runBackup()
-        let tempFile = outputData.0
-        let prefix = outputData.1
-        XCTAssertFalse(FileManager.default.fileExists(atPath: tempFile))
-        let actualOutput = try String(contentsOfFile: "output-test.md")
-        XCTAssertEqual(prefix + correctOutput, actualOutput)
-        try cleanUp("output-test.md")
-        XCTAssertFalse(FileManager.default.fileExists(atPath: "output-test.md"))
+        try executeBasicTest(dir: dir, correctOutput: correctOutput)
     }
 
     static var allTests = [
