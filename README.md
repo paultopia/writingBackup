@@ -55,3 +55,8 @@ Architecture for getting it to work using commandline app structure suggested by
 To repeat, early beta, might blow up, doesn't have any options at all yet, minimal tests and only for the happy path, etc. etc. No warranties, you assume the risk if it deletes all your data or blows up your computer or something. 
 
 
+### TO DO
+
+- add tests for unreadable/non-md files, need errors for those
+- push a release with new directory functionality (currently not in the uploaded release)
+
